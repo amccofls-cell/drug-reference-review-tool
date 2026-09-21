@@ -975,12 +975,196 @@ def check_dur(rows, mfds_key, dur_indices, cache_detail, call_counter, errors):
     return pd.DataFrame(result_rows, columns=columns)
 
 
-st.set_page_config(page_title="의약품 통합 조회", page_icon="💊", layout="wide")
-st.title("💊 의약품 허가정보·약가 통합 조회")
-st.caption("식약처 허가·상세정보와 심평원 약가를 결합해 조회합니다. 데이터의 기준일과 API 응답을 함께 확인하세요.")
+st.set_page_config(
+    page_title="의약품 통합 조회",
+    page_icon="💊",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+st.markdown(
+    """
+    <style>
+    :root {
+        --ink: #10243e;
+        --muted: #617086;
+        --line: #dbe4ee;
+        --surface: #ffffff;
+        --surface-soft: #f5f8fc;
+        --brand: #146c94;
+        --brand-dark: #0d4f72;
+        --accent: #19a7a0;
+    }
+
+    .stApp {
+        background:
+            radial-gradient(circle at 92% 0%, rgba(25, 167, 160, .10), transparent 28rem),
+            linear-gradient(180deg, #f8fbfe 0%, #f3f7fb 100%);
+        color: var(--ink);
+    }
+    .block-container {
+        max-width: 1440px;
+        padding-top: 2.25rem;
+        padding-bottom: 4rem;
+    }
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #0f3550 0%, #102b42 100%);
+        border-right: 0;
+    }
+    [data-testid="stSidebar"] * { color: #f6fbff; }
+    [data-testid="stSidebar"] [data-testid="stCaptionContainer"] p { color: #bad0df; }
+    [data-testid="stSidebar"] hr { border-color: rgba(255,255,255,.14); }
+    [data-testid="stSidebar"] .stTextInput input {
+        background: rgba(255,255,255,.10);
+        border-color: rgba(255,255,255,.22);
+        color: #fff;
+    }
+    .app-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 1.75rem 2rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid rgba(20,108,148,.13);
+        border-radius: 22px;
+        background: linear-gradient(135deg, rgba(255,255,255,.98), rgba(235,247,250,.96));
+        box-shadow: 0 14px 40px rgba(31, 78, 121, .08);
+    }
+    .app-hero::after {
+        content: "";
+        position: absolute;
+        width: 210px;
+        height: 210px;
+        right: -55px;
+        top: -95px;
+        border-radius: 50%;
+        background: linear-gradient(145deg, rgba(20,108,148,.17), rgba(25,167,160,.06));
+    }
+    .hero-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        padding: .3rem .65rem;
+        border-radius: 999px;
+        color: var(--brand-dark);
+        background: #e2f2f5;
+        font-size: .78rem;
+        font-weight: 700;
+        letter-spacing: .04em;
+    }
+    .app-hero h1 {
+        margin: .8rem 0 .4rem;
+        color: var(--ink);
+        font-size: clamp(1.75rem, 3vw, 2.55rem);
+        line-height: 1.15;
+        letter-spacing: -.035em;
+    }
+    .app-hero p {
+        margin: 0;
+        max-width: 760px;
+        color: var(--muted);
+        font-size: 1rem;
+        line-height: 1.65;
+    }
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        margin: 2rem 0 .85rem;
+        color: var(--ink);
+        font-size: 1.18rem;
+        font-weight: 750;
+    }
+    .section-step {
+        display: inline-grid;
+        place-items: center;
+        width: 1.8rem;
+        height: 1.8rem;
+        border-radius: 10px;
+        color: #fff;
+        background: linear-gradient(135deg, var(--brand), var(--accent));
+        font-size: .82rem;
+        box-shadow: 0 5px 14px rgba(20,108,148,.2);
+    }
+    div[data-testid="stForm"],
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        border-color: var(--line);
+        border-radius: 16px;
+    }
+    .stButton > button, .stDownloadButton > button {
+        min-height: 2.75rem;
+        border-radius: 11px;
+        border: 1px solid #c9d7e5;
+        font-weight: 700;
+        transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+    .stButton > button:hover, .stDownloadButton > button:hover {
+        transform: translateY(-1px);
+        border-color: var(--brand);
+        box-shadow: 0 8px 18px rgba(20,108,148,.12);
+    }
+    .stButton > button[kind="primary"] {
+        border: 0;
+        color: #fff;
+        background: linear-gradient(135deg, var(--brand-dark), var(--brand));
+    }
+    .stTextInput input, .stDateInput input, [data-baseweb="select"] > div {
+        border-radius: 10px !important;
+        border-color: #cfdae6 !important;
+        background: rgba(255,255,255,.92);
+    }
+    [data-testid="stDataFrame"] {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        box-shadow: 0 6px 20px rgba(31,78,121,.05);
+    }
+    .stTabs [data-baseweb="tab-list"] {
+        gap: .35rem;
+        padding: .3rem;
+        border-radius: 13px;
+        background: #eaf0f6;
+    }
+    .stTabs [data-baseweb="tab"] {
+        height: 2.7rem;
+        padding: 0 1.05rem;
+        border-radius: 9px;
+    }
+    .stTabs [aria-selected="true"] {
+        background: #fff;
+        box-shadow: 0 3px 10px rgba(31,78,121,.10);
+    }
+    [data-testid="stAlert"] { border-radius: 13px; }
+    [data-testid="stExpander"] {
+        overflow: hidden;
+        border-color: var(--line);
+        border-radius: 13px;
+        background: rgba(255,255,255,.72);
+    }
+    @media (max-width: 720px) {
+        .block-container { padding: 1rem .85rem 2.5rem; }
+        .app-hero { padding: 1.25rem; border-radius: 17px; }
+        .app-hero p { font-size: .92rem; }
+        .stTabs [data-baseweb="tab"] { padding: 0 .55rem; }
+    }
+    </style>
+    <div class="app-hero">
+      <span class="hero-kicker">OFFICIAL DRUG REFERENCE</span>
+      <h1>의약품 허가정보·약가 통합 조회</h1>
+      <p>식약처 허가사항과 심평원 급여약가를 한 화면에서 조회하고, 비교표와 AI 검토용 공식 레퍼런스를 생성합니다.</p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+def section_header(step, title):
+    st.markdown(
+        f'<div class="section-title"><span class="section-step">{step}</span><span>{title}</span></div>',
+        unsafe_allow_html=True,
+    )
 
 with st.sidebar:
-    st.header("설정")
+    st.header("환경 설정")
     try:
         secret_mfds = st.secrets.get("MFDS_KEY", "")
         secret_hira = st.secrets.get("HIRA_KEY", "")
@@ -1076,7 +1260,7 @@ if "last_errors" not in st.session_state:
 if "last_reference_json" not in st.session_state:
     st.session_state.last_reference_json = None
 
-st.subheader("1. 의약품 검색")
+section_header("1", "의약품 검색")
 query = st.text_input("의약품명 또는 제약사명", placeholder="예: 타이레놀, 한미약품")
 matches = []
 if query.strip():
@@ -1113,7 +1297,7 @@ if matches:
                 st.session_state.selection.append(seq)
         st.rerun()
 
-st.subheader("2. 조회할 품목")
+section_header("2", "조회할 품목")
 selected_rows = [by_seq[seq] for seq in st.session_state.selection if seq in by_seq]
 if selected_rows:
     selected_df = pd.DataFrame([
@@ -1139,7 +1323,7 @@ else:
 
 st.write(f"현재 선택된 품목: **{len(st.session_state.selection)}건**")
 
-st.subheader("3. 추가 조회 항목")
+section_header("3", "조회 설정")
 if "preset_new_drug_intro" not in st.session_state:
     st.session_state.preset_new_drug_intro = all(st.session_state.get(f"extra_{key}", False) for key in NEW_DRUG_PRESET_KEYS)
 if "preset_new_drug_intro_prev" not in st.session_state:
@@ -1185,7 +1369,7 @@ if st.button("선택한 품목 조회", type="primary", disabled=not st.session_
     st.rerun()
 
 if st.session_state.last_result is not None:
-    st.subheader("조회 결과")
+    section_header("4", "조회 결과")
     result_df = st.session_state.last_result
     filtered_result_df = result_df
 
