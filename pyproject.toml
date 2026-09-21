@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "drug-review-reference"
+version = "0.1.0"
+description = "MFDS/HIRA official reference collector for hospital drug review"
+requires-python = ">=3.10"
+dependencies = ["streamlit>=1.33,<2"]
+
+[project.scripts]
+drug-reference = "drug_reference.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
