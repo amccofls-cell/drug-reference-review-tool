@@ -808,6 +808,15 @@ def render_resizable_wrapped_table(display_df, show_index=False, height=720, tab
       .resize-handle {{ position:absolute; top:0; right:-4px; width:8px; height:100%; cursor:col-resize; z-index:3; }}
       .resize-handle:hover, .resizing {{ background:#5b8def; opacity:.55; }}
       body.resizing {{ cursor:col-resize; user-select:none; }}
+      @media (prefers-color-scheme: dark) {{
+        html, body {{ background:#111923; color:#e6edf5; color-scheme:dark; }}
+        .table-wrap {{ border-color:#344354; background:#111923; }}
+        th, td {{ border-color:#344354; color:#e6edf5; }}
+        th {{ background:#1b2a3a; color:#f5f9fd; }}
+        tr:nth-child(even) td {{ background:#151f2b; }}
+        tr:hover td {{ background:#1b3142; }}
+        .resize-handle:hover, .resizing {{ background:#42c7c1; }}
+      }}
     </style>
     <div class="table-wrap" id="wrap-{table_key}">
       <table id="table-{table_key}"><colgroup>{colgroup}</colgroup><thead><tr>{header_html}</tr></thead><tbody>{''.join(body_html)}</tbody></table>
@@ -1139,6 +1148,101 @@ st.markdown(
         border-color: var(--line);
         border-radius: 13px;
         background: rgba(255,255,255,.72);
+    }
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --ink: #edf4fa;
+            --muted: #a9bacb;
+            --line: #33475b;
+            --surface: #121c27;
+            --surface-soft: #172431;
+            --brand: #39a9d0;
+            --brand-dark: #1889b2;
+            --accent: #42c7c1;
+            color-scheme: dark;
+        }
+        .stApp {
+            background:
+                radial-gradient(circle at 92% 0%, rgba(66, 199, 193, .12), transparent 28rem),
+                linear-gradient(180deg, #0d151e 0%, #111b26 100%);
+            color: var(--ink);
+        }
+        .stApp p, .stApp label, .stApp li, .stApp span,
+        .stMarkdown, [data-testid="stCaptionContainer"] p {
+            color: #dce7f1;
+        }
+        .app-hero {
+            border-color: #2c5268;
+            background: linear-gradient(135deg, rgba(22,37,50,.98), rgba(17,49,59,.96));
+            box-shadow: 0 16px 44px rgba(0,0,0,.30);
+        }
+        .app-hero::after {
+            background: linear-gradient(145deg, rgba(57,169,208,.22), rgba(66,199,193,.07));
+        }
+        .hero-kicker {
+            color: #d9fbf8 !important;
+            background: rgba(66,199,193,.16);
+            border: 1px solid rgba(66,199,193,.24);
+        }
+        .app-hero h1, .section-title, .section-title span { color: #f3f8fc; }
+        .app-hero p { color: #b8c8d7; }
+        [data-testid="stSidebar"] {
+            background: linear-gradient(180deg, #0a2233 0%, #0b1b29 100%);
+            border-right: 1px solid #233b4d;
+        }
+        [data-testid="stSidebar"] * { color: #edf7ff; }
+        .stTextInput input, .stDateInput input, [data-baseweb="select"] > div,
+        [data-baseweb="input"] {
+            color: #edf4fa !important;
+            caret-color: #67d7d1;
+            border-color: #3a5166 !important;
+            background: #162330 !important;
+        }
+        .stTextInput input::placeholder { color: #8194a7; opacity: 1; }
+        [data-baseweb="popover"], [role="listbox"] {
+            color: #edf4fa;
+            background: #182633 !important;
+        }
+        .stButton > button, .stDownloadButton > button {
+            color: #eaf3fa;
+            border-color: #3a5268;
+            background: #172635;
+        }
+        .stButton > button:hover, .stDownloadButton > button:hover {
+            color: #ffffff;
+            border-color: #4bbbd8;
+            background: #1b3041;
+            box-shadow: 0 8px 20px rgba(0,0,0,.24);
+        }
+        .stButton > button[kind="primary"] {
+            color: #ffffff;
+            background: linear-gradient(135deg, #126f96, #15998f);
+        }
+        [data-testid="stDataFrame"] {
+            border-color: #34475a;
+            background: #111b26;
+            box-shadow: 0 7px 24px rgba(0,0,0,.20);
+        }
+        .stTabs [data-baseweb="tab-list"] { background: #172431; }
+        .stTabs [data-baseweb="tab"] { color: #b8c7d5; }
+        .stTabs [aria-selected="true"] {
+            color: #f6fbff;
+            background: #24384a;
+            box-shadow: 0 4px 12px rgba(0,0,0,.22);
+        }
+        [data-testid="stExpander"] {
+            border-color: #33475b;
+            background: rgba(20,32,44,.88);
+        }
+        [data-testid="stAlert"] {
+            border-color: #3c5368;
+            color: #edf4fa;
+        }
+        hr { border-color: #314355; }
+        code, pre {
+            color: #d9eff7 !important;
+            background: #0b141d !important;
+        }
     }
     @media (max-width: 720px) {
         .block-container { padding: 1rem .85rem 2.5rem; }
